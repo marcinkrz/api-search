@@ -5,9 +5,9 @@
 
   --background: hsl(0, 0%, 100%);
   --background-t: hsla(0, 0%, 100%, 0.4);
-  --background-1: hsl(0, 0%, 96%);
-  --background-2: hsl(0, 0%, 92%);
-  --background-3: hsl(0, 0%, 88%);
+  --background-1: hsl(0, 0%, 95%);
+  --background-2: hsl(0, 0%, 90%);
+  --background-3: hsl(0, 0%, 85%);
   --background-t-3: hsla(0, 0%, 88%, 0.8);
 
   --foreground: hsl(0, 0%, 10%);
@@ -32,7 +32,9 @@
 
   --muted: hsl(0, 0%, 48%);
   --muted-1: hsl(0, 0%, 44%);
-  --border: hsl(0, 0%, 76%);
+
+  --border: hsl(0, 0%, 75%);
+  --border-light: hsl(0, 0%, 90%);
 
   --focus: hsl(204, 90%, 45%);
 }
