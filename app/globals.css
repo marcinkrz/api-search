@@ -1,26 +1,87 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  --primary: #9d86de; /* Purple 928U */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --background: hsl(0, 0%, 100%);
+  --background-t: hsla(0, 0%, 100%, 0.4);
+  --background-1: hsl(0, 0%, 96%);
+  --background-2: hsl(0, 0%, 92%);
+  --background-3: hsl(0, 0%, 88%);
+  --background-t-3: hsla(0, 0%, 88%, 0.8);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --foreground: hsl(0, 0%, 10%);
+  --foreground-1: hsl(0, 0%, 20%);
+  --foreground-2: hsl(0, 0%, 25%);
+
+  --success-text: hsl(160, 100%, 25%);
+  --success-border: hsl(160, 100%, 30%);
+  --success-bg: hsl(160, 30%, 90%);
+
+  --danger-text: hsl(0, 70%, 50%);
+  --danger-border: hsl(0, 70%, 55%);
+  --danger-bg: hsl(0, 70%, 90%);
+
+  --warning-text: hsl(32, 95%, 40%);
+  --warning-border: hsl(32, 95%, 45%);
+  --warning-bg: hsl(32, 70%, 90%);
+
+  --info-text: hsl(204, 90%, 40%);
+  --info-border: hsl(204, 90%, 45%);
+  --info-bg: hsl(204, 94%, 92%);
+
+  --muted: hsl(0, 0%, 48%);
+  --muted-1: hsl(0, 0%, 44%);
+  --border: hsl(0, 0%, 76%);
+
+  --focus: hsl(204, 90%, 45%);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply bg-[var(--background)] text-[var(--foreground)] antialiased;
+}
+
+input:not([type="checkbox"]),
+select,
+textarea {
+  min-height: 2.5rem;
+}
+
+.container {
+  @apply mx-auto px-2 md:px-4 lg:px-6 max-w-none;
+}
+
+.gap {
+  @apply gap-4 md:gap-8 lg:gap-12 xl:gap-16;
+}
+
+.display,
+.h1,
+.h2,
+.h3 {
+  @apply font-semibold tracking-tight;
+}
+
+.display {
+  @apply text-[2.5rem] sm:text-6xl xl:text-7xl text-balance !leading-[1.1];
+}
+
+.h1 {
+  @apply text-3xl sm:text-4xl xl:text-5xl text-balance !leading-[1.1];
+}
+
+.h2 {
+  @apply text-2xl xl:text-3xl !leading-[1.1];
+}
+
+.h3 {
+  @apply text-xl xl:text-2xl !leading-tight;
+}
+
+.link {
+  @apply inline-flex hover:underline;
+}
+
+.joint {
+  @apply whitespace-nowrap;
 }
