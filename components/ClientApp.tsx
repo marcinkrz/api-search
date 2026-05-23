@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Info, FileDown, FileUp, TriangleAlert, LogOut, ChevronUp, ChevronDown } from "lucide-react";
+import { Info, FileDown, FileUp, TriangleAlert, LogOut, ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
 import * as ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { Button } from "@/components/Button";
+import { Checkbox } from "@/components/Checkbox";
 
 type Firm = {
   id: string;
@@ -321,15 +322,25 @@ export default function ClientApp() {
   };
 
   const handleSort = (key: string) => {
-    let direction: "asc" | "desc" = "asc";
-    if (sortConfig?.key === key && sortConfig.direction === "asc") {
-      direction = "desc";
-    }
-    setSortConfig({ key, direction });
+    setSortConfig((current) => {
+      if (!current || current.key !== key) {
+        return { key, direction: "asc" };
+      }
+      if (current.direction === "asc") {
+        return { key, direction: "desc" };
+      }
+      return null;
+    });
   };
 
   const getSortedRows = () => {
     if (!sortConfig) return state.rows;
+
+    const collator = new Intl.Collator('pl', {
+      numeric: true,
+      sensitivity: 'base',
+    });
+
     return [...state.rows].sort((a, b) => {
       let valA = "";
       let valB = "";
@@ -351,9 +362,9 @@ export default function ClientApp() {
           break;
       }
 
-      if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
-      if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
-      return 0;
+      const comparison = collator.compare(valA, valB);
+
+      return sortConfig.direction === "asc" ? comparison : -comparison;
     });
   };
 
@@ -376,25 +387,27 @@ export default function ClientApp() {
     : "0.0";
 
   const SortIcon = ({ column }: { column: string }) => {
-    if (sortConfig?.key !== column) return null;
+    if (sortConfig?.key !== column) {
+      return <ChevronsUpDown className="inline w-4 h-4" />;
+    }
     return sortConfig.direction === "asc" ? <ChevronUp className="inline w-4 h-4" /> : <ChevronDown className="inline w-4 h-4" />;
   };
 
   const fieldLabels: Record<string, string> = {
-    pkd: "pkd",
-    nazwa: "nazwa",
-    ulica: "ulica",
-    miasto: "miasto",
-    wojewodztwo: "wojewodztwo",
-    powiat: "powiat",
-    gmina: "gmina",
-    kod: "kod pocztowy"
+    pkd: "Kod PKD (0000Z)",
+    nazwa: "Nazwa",
+    ulica: "Ulica",
+    miasto: "Miasto",
+    wojewodztwo: "Wojewodztwo",
+    powiat: "Powiat",
+    gmina: "Gmina",
+    kod: "Kod pocztowy"
   };
 
   return (
     <>
       <div className="flex justify-between items-center py-4">
-        <h1 className="h2">API Search</h1>
+        <h1 className="h3">API Search</h1>
         <div className="flex gap-2 items-center">
           <div className="text-sm text-[var(--muted)] leading-[1.1]">
             Limit API:<br /><span className={availableBudget < 100 ? "text-[var(--danger-text)]" : "text-[var(--foreground)]"}>{availableBudget}</span> / {REQUEST_LIMIT}
@@ -445,11 +458,11 @@ export default function ClientApp() {
             className="flex w-full outline-0 ring-0 ring-[var(--focus)] border border-[var(--border)] rounded-xl focus-visible:border-[var(--focus)] focus-visible:ring-1 active:border-[var(--focus)] active:ring-1 px-4 placeholder:text-[var(--muted)]"
           >
             <option value="">Wybierz status...</option>
-            <option value="AKTYWNY">AKTYWNY</option>
-            <option value="WYKRESLONY">WYKRESLONY</option>
-            <option value="ZAWIESZONY">ZAWIESZONY</option>
-            <option value="OCZEKUJE_NA_ROZPOCZECIE_DZIALANOSCI">OCZEKUJE NA ROZPOCZECIE DZIALANOSCI</option>
-            <option value="WYLACZNIE_W_FORMIE_SPOLKI">WYLACZNIE W FORMIE SPOLKI</option>
+            <option value="AKTYWNY">Aktywny</option>
+            <option value="WYKRESLONY">Wykreślony</option>
+            <option value="ZAWIESZONY">Zawieszony</option>
+            <option value="OCZEKUJE_NA_ROZPOCZECIE_DZIALANOSCI">Oczekuje na rozpoczęcie działalności</option>
+            <option value="WYLACZNIE_W_FORMIE_SPOLKI">Wyłącznie w formie spółki</option>
           </select>
         </div>
         <div className="flex justify-end">
@@ -508,22 +521,44 @@ export default function ClientApp() {
       <div className="rounded-lg border border-[var(--border-light)] overflow-hidden">
         <div className="overflow-x-auto max-h-[600px]">
           <table className="w-full text-sm text-left whitespace-nowrap">
-            <thead className="text-xs text-[var(--muted)] uppercase bg-[var(--background-1)] sticky top-0 z-10">
-              <tr>
-                <th className="px-4 py-3">
-                  <input type="checkbox" checked={state.selectedRowIds.length === state.rows.length && state.rows.length > 0} onChange={toggleSelectAll} />
+            <thead className="text-xs text-[var(--muted)] uppercase sticky top-0 z-10">
+              <tr className="relative after:absolute after:inset-0 after:-bottom-px after:bg-[var(--border-light)] after:-z-1">
+                <th className="flex justify-center p-3 bg-[var(--background-1)]">
+                  <Checkbox name="select-all" checked={state.selectedRowIds.length === state.rows.length && state.rows.length > 0} onChange={toggleSelectAll} />
                 </th>
-                <th className="px-4 py-3 cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("nazwa")}>Nazwa firmy <SortIcon column="nazwa" /></th>
-                <th className="px-4 py-3 cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("nip")}>NIP <SortIcon column="nip" /></th>
-                <th className="px-4 py-3 cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("nipSc")}>NIP SC <SortIcon column="nipSc" /></th>
-                <th className="px-4 py-3 cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("regon")}>Regon <SortIcon column="regon" /></th>
-                <th className="px-4 py-3 cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("ulica")}>Ulica <SortIcon column="ulica" /></th>
-                <th className="px-4 py-3 cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("miasto")}>Miasto <SortIcon column="miasto" /></th>
-                <th className="px-4 py-3 cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("wojewodztwo")}>Wojewodztwo <SortIcon column="wojewodztwo" /></th>
-                <th className="px-4 py-3 cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("powiat")}>Powiat <SortIcon column="powiat" /></th>
-                <th className="px-4 py-3 cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("gmina")}>Gmina <SortIcon column="gmina" /></th>
-                <th className="px-4 py-3 cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("kod")}>Kod pocztowy <SortIcon column="kod" /></th>
-                <th className="px-4 py-3 cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("pkd")}>Kod PKD <SortIcon column="pkd" /></th>
+                <th className="px-2 py-3 bg-[var(--background-1)] border-x-1 border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("nazwa")}>
+                  <span className="flex gap-x-2 justify-between">Nazwa firmy <SortIcon column="nazwa" /></span>
+                </th>
+                <th className="px-2 py-3 bg-[var(--background-1)] border-l-1 border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("nip")}>
+                  <span className="flex gap-x-2 justify-between">NIP <SortIcon column="nip" /></span>
+                </th>
+                <th className="px-2 py-3 bg-[var(--background-1)] border-l-1 border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("nipSc")}>
+                  <span className="flex gap-x-2 justify-between">NIP SC <SortIcon column="nipSc" /></span>
+                </th>
+                <th className="p-2 py-3 bg-[var(--background-1)] border-l-1 border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("regon")}>
+                  <span className="flex gap-x-2 justify-between">Regon <SortIcon column="regon" /></span>
+                </th>
+                <th className="px-2 py-3 bg-[var(--background-1)] border-l-1 border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("ulica")}>
+                  <span className="flex gap-x-2 justify-between">Ulica <SortIcon column="ulica" /></span>
+                </th>
+                <th className="px-2 py-3 bg-[var(--background-1)] border-l-1 border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("miasto")}>
+                  <span className="flex gap-x-2 justify-between">Miasto <SortIcon column="miasto" /></span>
+                </th>
+                <th className="px-2 py-3 bg-[var(--background-1)] border-l-1 border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("wojewodztwo")}>
+                  <span className="flex gap-x-2 justify-between">Województwo <SortIcon column="wojewodztwo" /></span>
+                </th>
+                <th className="px-2 py-3 bg-[var(--background-1)] border-l-1 border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("powiat")}>
+                  <span className="flex gap-x-2 justify-between">Powiat <SortIcon column="powiat" /></span>
+                </th>
+                <th className="px-2 py-3 bg-[var(--background-1)] border-l-1 border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("gmina")}>
+                  <span className="flex gap-x-2 justify-between">Gmina <SortIcon column="gmina" /></span>
+                </th>
+                <th className="px-2 py-3 bg-[var(--background-1)] border-l-1 border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("kod")}>
+                  <span className="flex gap-x-2 justify-between">Kod pocztowy <SortIcon column="kod" /></span>
+                </th>
+                <th className="px-2 py-3 bg-[var(--background-1)] border-l-1 border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("pkd")}>
+                  <span className="flex gap-x-2 justify-between">Kod PKD <SortIcon column="pkd" /></span>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -531,25 +566,27 @@ export default function ClientApp() {
                 const rowNip = row.wlasciciel?.nip || "";
                 return (
                   <tr key={row.id} className={`border-b border-[var(--border-light)] hover:bg-[var(--info-bg)] ${state.selectedRowIds.includes(row.id) ? "bg-[var(--success-bg)]" : ""}`}>
-                    <td className="px-4 py-3">
-                      <input type="checkbox" checked={state.selectedRowIds.includes(row.id)} onChange={() => toggleSelectRow(row.id)} />
+                    <td className="p-3 w-12">
+                      <span className="flex justify-center">
+                        <Checkbox name="select-row" type="checkbox" checked={state.selectedRowIds.includes(row.id)} onChange={() => toggleSelectRow(row.id)} />
+                      </span>
                     </td>
-                    <td className="px-4 py-3 font-medium max-w-[200px] truncate" title={row.nazwa}>{row.nazwa}</td>
-                    <td className="px-4 py-3">{rowNip}</td>
-                    <td className="px-4 py-3">{row.nipSc || ""}</td>
-                    <td className="px-4 py-3">{row.wlasciciel?.regon || ""}</td>
-                    <td className="px-4 py-3">{row.adresDzialalnosci?.ulica || ""}</td>
-                    <td className="px-4 py-3">{row.adresDzialalnosci?.miasto || ""}</td>
-                    <td className="px-4 py-3">{row.adresDzialalnosci?.wojewodztwo || ""}</td>
-                    <td className="px-4 py-3">{row.adresDzialalnosci?.powiat || ""}</td>
-                    <td className="px-4 py-3">{row.adresDzialalnosci?.gmina || ""}</td>
-                    <td className="px-4 py-3">{row.adresDzialalnosci?.kod || ""}</td>
-                    <td className="px-4 py-3">
+                    <td className="px-2 py-3 font-medium max-w-[250px] truncate" title={row.nazwa}>{row.nazwa}</td>
+                    <td className="px-2 py-3 w-28">{rowNip}</td>
+                    <td className="px-2 py-3 w-28">{row.nipSc || ""}</td>
+                    <td className="px-2 py-3 w-28">{row.wlasciciel?.regon || ""}</td>
+                    <td className="px-2 py-3">{row.adresDzialalnosci?.ulica || ""}</td>
+                    <td className="px-2 py-3">{row.adresDzialalnosci?.miasto || ""}</td>
+                    <td className="px-2 py-3">{row.adresDzialalnosci?.wojewodztwo || ""}</td>
+                    <td className="px-2 py-3">{row.adresDzialalnosci?.powiat || ""}</td>
+                    <td className="px-2 py-3">{row.adresDzialalnosci?.gmina || ""}</td>
+                    <td className="px-2 py-3 w-36">{row.adresDzialalnosci?.kod || ""}</td>
+                    <td className="px-2 py-3 w-24">
                       {rowNip && state.pkdCache[rowNip] ? (
-                        <div className="flex items-center gap-2 relative group">
+                        <div className="relative flex items-center justify-between gap-x-2 group">
                           <span>{state.pkdCache[rowNip].kod}</span>
-                          <Info size={16} className="text-gray-400 cursor-help" />
-                          <div className="absolute hidden group-hover:block bottom-full mb-2 bg-gray-800 text-white text-xs rounded px-2 py-1 z-50 whitespace-normal w-48 shadow-lg">
+                          <Info size={16} className="text-[var(--muted)]" />
+                          <div className="absolute hidden group-hover:block bottom-full -right-2 w-max mb-2 px-3 py-2 z-50 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md text-balance shadow-md before:absolute before:-bottom-[6px] before:right-[10px] before:border-l-6 before:border-r-6 before:border-t-6 before:border-l-transparent before:border-r-transparent before:border-t-[var(--foreground)]">
                             {state.pkdCache[rowNip].nazwa}
                           </div>
                         </div>
@@ -568,7 +605,7 @@ export default function ClientApp() {
             </tbody>
           </table>
         </div>
-      </div>
+      </div >
 
       {
         state.currentPage < state.totalPages && (
