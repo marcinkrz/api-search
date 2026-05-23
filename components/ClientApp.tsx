@@ -413,16 +413,17 @@ export default function ClientApp() {
             Limit API:<br /><span className={availableBudget < 100 ? "text-[var(--danger-text)]" : "text-[var(--foreground)]"}>{availableBudget}</span> / {REQUEST_LIMIT}
           </div>
           <Button onClick={downloadState} variant="outline" size="icon">
-            <FileDown size={24} />
+            <FileDown size={16} />
             <span className="hidden md:flex mx-2 text-sm">Pobierz stan</span>
           </Button>
           <label className="cursor-pointer inline-flex justify-center items-center leading-none tracking-wide whitespace-nowrap border transition-colors min-w-[2rem] p-1 rounded-lg bg-transparent border-[var(--border)] text-[var(--foreground-1)] hover:border-[var(--foreground)] hover:text-[var(--foreground)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--foreground)] focus-visible:border-transparent active:border-[var(--foreground)] active:text-[var(--foreground)]">
-            <FileUp size={24} />
+            <FileUp size={16} />
             <span className="hidden md:flex mx-2 text-sm">Wczytaj stan</span>
             <input type="file" accept=".json" onChange={uploadState} className="hidden" />
           </label>
           <Button onClick={handleLogout} variant="outline" size="icon" className="" title="Wyloguj">
-            <LogOut size={24} />
+            <LogOut size={16} />
+            <span className="hidden md:flex mx-2 text-sm">Wyloguj</span>
           </Button>
         </div>
       </div>
@@ -449,13 +450,13 @@ export default function ClientApp() {
               placeholder={fieldLabels[field]}
               value={state.filters[field] || ""}
               onChange={(e) => handleFilterChange(field, e.target.value)}
-              className="flex w-full outline-0 ring-0 ring-[var(--focus)] border border-[var(--border)] rounded-xl focus-visible:border-[var(--focus)] focus-visible:ring-1 active:border-[var(--focus)] active:ring-1 px-4 placeholder:text-[var(--muted)]"
+              className="flex w-full outline-0 ring-0 ring-[var(--focus)] border border-[var(--border)] rounded-lg focus-visible:border-[var(--focus)] focus-visible:ring-1 active:border-[var(--focus)] active:ring-1 px-4 placeholder:text-[var(--muted)]"
             />
           ))}
           <select
             value={state.filters.status || ""}
             onChange={(e) => handleFilterChange("status", e.target.value)}
-            className="flex w-full outline-0 ring-0 ring-[var(--focus)] border border-[var(--border)] rounded-xl focus-visible:border-[var(--focus)] focus-visible:ring-1 active:border-[var(--focus)] active:ring-1 px-4 placeholder:text-[var(--muted)]"
+            className="flex w-full outline-0 ring-0 ring-[var(--focus)] border border-[var(--border)] rounded-lg focus-visible:border-[var(--focus)] focus-visible:ring-1 active:border-[var(--focus)] active:ring-1 px-4 placeholder:text-[var(--muted)]"
           >
             <option value="">Wybierz status...</option>
             <option value="AKTYWNY">Aktywny</option>
@@ -605,7 +606,7 @@ export default function ClientApp() {
             </tbody>
           </table>
         </div>
-      </div >
+      </div>
 
       {
         state.currentPage < state.totalPages && (

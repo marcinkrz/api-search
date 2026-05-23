@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --primary: #9d86de; /* Purple 928U */
+  --primary: hsl(260, 100, 60);
 
   --background: hsl(0, 0%, 100%);
   --background-t: hsla(0, 0%, 100%, 0.4);
@@ -26,9 +26,9 @@
   --warning-border: hsl(32, 95%, 45%);
   --warning-bg: hsl(32, 70%, 90%);
 
-  --info-text: hsl(204, 90%, 40%);
-  --info-border: hsl(204, 90%, 45%);
-  --info-bg: hsl(204, 94%, 92%);
+  --info-text: hsl(220, 90%, 40%);
+  --info-border: hsl(220, 90%, 45%);
+  --info-bg: hsl(220, 100%, 97%);
 
   --muted: hsl(0, 0%, 48%);
   --muted-1: hsl(0, 0%, 44%);
@@ -36,7 +36,45 @@
   --border: hsl(0, 0%, 75%);
   --border-light: hsl(0, 0%, 90%);
 
-  --focus: hsl(204, 90%, 45%);
+  --focus: hsl(220, 90%, 45%);
+}
+
+[data-theme="dark"] {
+  --primary: hsl(255, 70%, 70%);
+
+  --background: hsl(0, 0%, 0%);
+  --background-t: hsla(0, 0%, 0%, 0.4);
+  --background-1: hsl(0, 0%, 6%);
+  --background-2: hsl(0, 0%, 9%);
+  --background-3: hsl(0, 0%, 12%);
+  --background-t-3: hsla(0, 0%, 20%, 0.8);
+
+  --foreground: hsl(0, 0%, 95%);
+  --foreground-1: hsl(0, 0%, 80%);
+  --foreground-2: hsl(0, 0%, 75%);
+
+  --success-text: hsl(160, 100%, 35%);
+  --success-border: hsl(160, 100%, 45%);
+  --success-bg: hsl(160, 100%, 10%);
+
+  --danger-text: hsl(0, 100%, 30%);
+  --danger-border: hsl(0, 100%, 45%);
+  --danger-bg: hsl(0, 100%, 10%);
+
+  --warning-text: hsl(32, 100%, 35%);
+  --warning-border: hsl(32, 100%, 45%);
+  --warning-bg: hsl(32, 100%, 10%);
+
+  --info-text: hsl(220, 100%, 35%);
+  --info-border: hsl(220, 100%, 45%);
+  --info-bg: hsl(220, 100%, 10%);
+
+  --muted: hsl(0, 0%, 64%);
+  --muted-1: hsl(0, 0%, 68%);
+  --border: hsl(0, 0%, 30%);
+  --border-light: hsl(0, 0%, 15%);
+
+  --focus: hsl(220, 100%, 45%);
 }
 
 body {

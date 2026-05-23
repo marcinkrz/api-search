@@ -20,9 +20,9 @@ const buttonVariants = cva(
       variant: {
         primary:
           `bg-[var(--foreground)] text-[var(--background)] 
-          hover:bg-[var(--foreground-1)] 
+          hover:bg-[var(--primary)] 
           focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--foreground)]
-          active:bg-[var(--foreground-1)]
+          active:bg-[var(--primary)]
           disabled:bg-[var(--background-3)] disabled:border-[var(--background-3)] disabled:hover:border-[var(--background-3)]`,
         outline:
           `bg-transparent border-[var(--border)] text-[var(--foreground-1)] 
