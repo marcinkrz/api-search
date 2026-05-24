@@ -523,7 +523,7 @@ export default function ClientApp() {
         <div className="overflow-x-auto max-h-[600px]">
           <table className="w-full text-sm text-left whitespace-nowrap">
             <thead className="text-xs text-[var(--muted)] uppercase sticky top-0 z-10">
-              <tr className="relative after:absolute after:inset-0 after:-bottom-px after:bg-[var(--border-light)] after:-z-1">
+              <tr className="relative after:absolute after:top-0 after:inset-x-0 after:h-[41px] after:bg-[var(--border-light)] after:-z-1">
                 <th className="flex justify-center p-3 bg-[var(--background-1)]">
                   <Checkbox name="select-all" checked={state.selectedRowIds.length === state.rows.length && state.rows.length > 0} onChange={toggleSelectAll} />
                 </th>
