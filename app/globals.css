@@ -82,9 +82,8 @@ body {
 }
 
 input:not([type="checkbox"]),
-select,
-textarea {
-  min-height: 2.5rem;
+select {
+  @apply h-10;
 }
 
 .container {
