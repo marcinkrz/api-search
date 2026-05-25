@@ -594,7 +594,7 @@ export default function ClientApp() {
                           <span>{state.pkdCache[rowNip].kod}</span>
                           <span className="cursor-pointer flex p-3 rounded-full group/tooltip">
                             <Info size={16} className="text-[var(--muted)]" />
-                            <div className="absolute hidden group-hover/tooltip:block group-active/tooltip:block bottom-full right-0 w-max px-3 py-2 z-50 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md text-balance shadow-md before:absolute before:-bottom-[6px] before:right-[14px] before:border-l-6 before:border-r-6 before:border-t-6 before:border-l-transparent before:border-r-transparent before:border-t-[var(--foreground)]">
+                            <div className="absolute hidden group-hover/tooltip:block group-active/tooltip:block bottom-full right-0 w-max max-w-64 px-3 py-2 z-50 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md text-balance shadow-md before:absolute before:-bottom-[6px] before:right-[14px] before:border-l-6 before:border-r-6 before:border-t-6 before:border-l-transparent before:border-r-transparent before:border-t-[var(--foreground)]">
                               {state.pkdCache[rowNip].nazwa}
                             </div>
                           </span>
