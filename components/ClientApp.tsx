@@ -257,13 +257,16 @@ export default function ClientApp() {
       { header: "Powiat", key: "powiat" },
       { header: "Gmina", key: "gmina" },
       { header: "Kod pocztowy", key: "kod" },
-      { header: "Kod PKD", key: "pkd" },
+      { header: "PKD", key: "pkd" },
+      { header: "PKD Nazwa", key: "pkdNazwa" }
     ];
 
     const selectedRows = state.rows.filter(r => state.selectedRowIds.includes(r.id));
     selectedRows.forEach((r) => {
       const nip = r.wlasciciel?.nip || "";
       const pkd = nip ? state.pkdCache[nip]?.kod : "";
+      const pkdNazwa = nip ? state.pkdCache[nip]?.nazwa : "";
+
       ws.addRow({
         nazwa: r.nazwa,
         nip: nip,
@@ -276,6 +279,7 @@ export default function ClientApp() {
         gmina: r.adresDzialalnosci?.gmina || "",
         kod: r.adresDzialalnosci?.kod || "",
         pkd: pkd,
+        pkdNazwa: pkdNazwa,
       });
     });
 
@@ -388,9 +392,9 @@ export default function ClientApp() {
 
   const SortIcon = ({ column }: { column: string }) => {
     if (sortConfig?.key !== column) {
-      return <ChevronsUpDown className="inline w-4 h-4" />;
+      return <ChevronsUpDown size={16} />;
     }
-    return sortConfig.direction === "asc" ? <ChevronUp className="inline w-4 h-4" /> : <ChevronDown className="inline w-4 h-4" />;
+    return sortConfig.direction === "asc" ? <ChevronUp size={16} /> : <ChevronDown size={16} />;
   };
 
   const fieldLabels: Record<string, string> = {
@@ -523,42 +527,44 @@ export default function ClientApp() {
         <div className="overflow-x-auto max-h-[600px]">
           <table className="w-full text-sm text-left whitespace-nowrap">
             <thead className="text-xs text-[var(--muted)] uppercase sticky top-0 z-10">
-              <tr className="relative after:absolute after:top-0 after:inset-x-0 after:h-[41px] after:bg-[var(--border-light)] after:-z-1">
-                <th className="flex justify-center p-3 bg-[var(--background-1)]">
-                  <Checkbox name="select-all" checked={state.selectedRowIds.length === state.rows.length && state.rows.length > 0} onChange={toggleSelectAll} />
+              <tr>
+                <th className="sticky left-0">
+                  <span className="flex gap-x-2 justify-center p-3 bg-[var(--background-1)] border-r border-b border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]">
+                    <Checkbox name="select-all" checked={state.selectedRowIds.length === state.rows.length && state.rows.length > 0} onChange={toggleSelectAll} />
+                  </span>
                 </th>
-                <th className="px-2 py-3 bg-[var(--background-1)] border-x-1 border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("nazwa")}>
-                  <span className="flex gap-x-2 justify-between">Nazwa firmy <SortIcon column="nazwa" /></span>
+                <th onClick={() => handleSort("nazwa")}>
+                  <span className="flex gap-x-2 justify-between px-2 py-3 bg-[var(--background-1)] border-r border-b border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]">Nazwa firmy <SortIcon column="nazwa" /></span>
                 </th>
-                <th className="px-2 py-3 bg-[var(--background-1)] border-l-1 border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("nip")}>
-                  <span className="flex gap-x-2 justify-between">NIP <SortIcon column="nip" /></span>
+                <th onClick={() => handleSort("nip")}>
+                  <span className="flex gap-x-2 justify-between px-2 py-3 bg-[var(--background-1)] border-r border-b border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]">NIP <SortIcon column="nip" /></span>
                 </th>
-                <th className="px-2 py-3 bg-[var(--background-1)] border-l-1 border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("nipSc")}>
-                  <span className="flex gap-x-2 justify-between">NIP SC <SortIcon column="nipSc" /></span>
+                <th onClick={() => handleSort("nipSc")}>
+                  <span className="flex gap-x-2 justify-between px-2 py-3 bg-[var(--background-1)] border-r border-b border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]">NIP SC <SortIcon column="nipSc" /></span>
                 </th>
-                <th className="p-2 py-3 bg-[var(--background-1)] border-l-1 border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("regon")}>
-                  <span className="flex gap-x-2 justify-between">Regon <SortIcon column="regon" /></span>
+                <th onClick={() => handleSort("regon")}>
+                  <span className="flex gap-x-2 justify-between px-2 py-3 bg-[var(--background-1)] border-r border-b border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]">Regon <SortIcon column="regon" /></span>
                 </th>
-                <th className="px-2 py-3 bg-[var(--background-1)] border-l-1 border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("ulica")}>
-                  <span className="flex gap-x-2 justify-between">Ulica <SortIcon column="ulica" /></span>
+                <th onClick={() => handleSort("ulica")}>
+                  <span className="flex gap-x-2 justify-between px-2 py-3 bg-[var(--background-1)] border-r border-b border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]">Ulica <SortIcon column="ulica" /></span>
                 </th>
-                <th className="px-2 py-3 bg-[var(--background-1)] border-l-1 border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("miasto")}>
-                  <span className="flex gap-x-2 justify-between">Miasto <SortIcon column="miasto" /></span>
+                <th onClick={() => handleSort("miasto")}>
+                  <span className="flex gap-x-2 justify-between px-2 py-3 bg-[var(--background-1)] border-r border-b border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]">Miasto <SortIcon column="miasto" /></span>
                 </th>
-                <th className="px-2 py-3 bg-[var(--background-1)] border-l-1 border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("wojewodztwo")}>
-                  <span className="flex gap-x-2 justify-between">Województwo <SortIcon column="wojewodztwo" /></span>
+                <th onClick={() => handleSort("wojewodztwo")}>
+                  <span className="flex gap-x-2 justify-between px-2 py-3 bg-[var(--background-1)] border-r border-b border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]">Województwo <SortIcon column="wojewodztwo" /></span>
                 </th>
-                <th className="px-2 py-3 bg-[var(--background-1)] border-l-1 border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("powiat")}>
-                  <span className="flex gap-x-2 justify-between">Powiat <SortIcon column="powiat" /></span>
+                <th onClick={() => handleSort("powiat")}>
+                  <span className="flex gap-x-2 justify-between px-2 py-3 bg-[var(--background-1)] border-r border-b border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]">Powiat <SortIcon column="powiat" /></span>
                 </th>
-                <th className="px-2 py-3 bg-[var(--background-1)] border-l-1 border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("gmina")}>
-                  <span className="flex gap-x-2 justify-between">Gmina <SortIcon column="gmina" /></span>
+                <th onClick={() => handleSort("gmina")}>
+                  <span className="flex gap-x-2 justify-between px-2 py-3 bg-[var(--background-1)] border-r border-b border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]">Gmina <SortIcon column="gmina" /></span>
                 </th>
-                <th className="px-2 py-3 bg-[var(--background-1)] border-l-1 border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("kod")}>
-                  <span className="flex gap-x-2 justify-between">Kod pocztowy <SortIcon column="kod" /></span>
+                <th onClick={() => handleSort("kod")}>
+                  <span className="flex gap-x-2 justify-between px-2 py-3 bg-[var(--background-1)] border-r border-b border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]">Kod pocztowy <SortIcon column="kod" /></span>
                 </th>
-                <th className="px-2 py-3 bg-[var(--background-1)] border-l-1 border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]" onClick={() => handleSort("pkd")}>
-                  <span className="flex gap-x-2 justify-between">Kod PKD <SortIcon column="pkd" /></span>
+                <th onClick={() => handleSort("pkd")}>
+                  <span className="flex gap-x-2 justify-between px-2 py-3 bg-[var(--background-1)] border-b border-[var(--border-light)] cursor-pointer hover:bg-[var(--background-2)]">Kod PKD <SortIcon column="pkd" /></span>
                 </th>
               </tr>
             </thead>
@@ -566,9 +572,9 @@ export default function ClientApp() {
               {getSortedRows().map((row) => {
                 const rowNip = row.wlasciciel?.nip || "";
                 return (
-                  <tr key={row.id} className={`border-b border-[var(--border-light)] hover:bg-[var(--info-bg)] ${state.selectedRowIds.includes(row.id) ? "bg-[var(--success-bg)]" : ""}`}>
-                    <td className="p-3 w-12">
-                      <span className="flex justify-center">
+                  <tr key={row.id} className={`group/row border-b border-[var(--border-light)] hover:bg-[var(--info-bg)] active:bg-[var(--info-bg)] ${state.selectedRowIds.includes(row.id) ? "bg-[var(--success-bg)]" : ""}`}>
+                    <td className="sticky left-0 w-12">
+                      <span className={`flex justify-center py-[14px] px-3 bg-[var(--background)] border-r border-[var(--border-light)] group-hover/row:bg-[var(--info-bg)] group-active/row:bg-[var(--info-bg)] ${state.selectedRowIds.includes(row.id) ? "bg-[var(--success-bg)]" : ""}`}>
                         <Checkbox name="select-row" type="checkbox" checked={state.selectedRowIds.includes(row.id)} onChange={() => toggleSelectRow(row.id)} />
                       </span>
                     </td>
@@ -582,14 +588,16 @@ export default function ClientApp() {
                     <td className="px-2 py-3">{row.adresDzialalnosci?.powiat || ""}</td>
                     <td className="px-2 py-3">{row.adresDzialalnosci?.gmina || ""}</td>
                     <td className="px-2 py-3 w-36">{row.adresDzialalnosci?.kod || ""}</td>
-                    <td className="px-2 py-3 w-24">
+                    <td className="pl-2 w-24">
                       {rowNip && state.pkdCache[rowNip] ? (
-                        <div className="relative flex items-center justify-between gap-x-2 group">
+                        <div className="relative flex items-center justify-between">
                           <span>{state.pkdCache[rowNip].kod}</span>
-                          <Info size={16} className="text-[var(--muted)]" />
-                          <div className="absolute hidden group-hover:block bottom-full -right-2 w-max mb-2 px-3 py-2 z-50 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md text-balance shadow-md before:absolute before:-bottom-[6px] before:right-[10px] before:border-l-6 before:border-r-6 before:border-t-6 before:border-l-transparent before:border-r-transparent before:border-t-[var(--foreground)]">
-                            {state.pkdCache[rowNip].nazwa}
-                          </div>
+                          <span className="cursor-pointer flex p-3 rounded-full group/tooltip">
+                            <Info size={16} className="text-[var(--muted)]" />
+                            <div className="absolute hidden group-hover/tooltip:block group-active/tooltip:block bottom-full right-0 w-max px-3 py-2 z-50 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md text-balance shadow-md before:absolute before:-bottom-[6px] before:right-[14px] before:border-l-6 before:border-r-6 before:border-t-6 before:border-l-transparent before:border-r-transparent before:border-t-[var(--foreground)]">
+                              {state.pkdCache[rowNip].nazwa}
+                            </div>
+                          </span>
                         </div>
                       ) : null}
                     </td>

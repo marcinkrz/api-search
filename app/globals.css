@@ -16,7 +16,7 @@
 
   --success-text: hsl(160, 100%, 25%);
   --success-border: hsl(160, 100%, 30%);
-  --success-bg: hsl(160, 30%, 90%);
+  --success-bg: hsl(160, 30%, 95%);
 
   --danger-text: hsl(0, 70%, 50%);
   --danger-border: hsl(0, 70%, 55%);
@@ -28,7 +28,7 @@
 
   --info-text: hsl(220, 90%, 40%);
   --info-border: hsl(220, 90%, 45%);
-  --info-bg: hsl(220, 100%, 97%);
+  --info-bg: hsl(220, 100%, 95%);
 
   --muted: hsl(0, 0%, 48%);
   --muted-1: hsl(0, 0%, 44%);
@@ -55,7 +55,7 @@
 
   --success-text: hsl(160, 100%, 35%);
   --success-border: hsl(160, 100%, 45%);
-  --success-bg: hsl(160, 100%, 10%);
+  --success-bg: hsl(160, 100%, 5%);
 
   --danger-text: hsl(0, 100%, 30%);
   --danger-border: hsl(0, 100%, 45%);
