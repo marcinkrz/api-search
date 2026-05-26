@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { Info, FileDown, FileUp, TriangleAlert, LogOut, ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
+import React, { useState, useRef } from "react";
+import { useLocalStorage } from "@/app/hooks/useLocalStorage";
+import { Info, FileDown, FileUp, TriangleAlert, LogOut, ChevronUp, ChevronDown, ChevronsUpDown, Trash2 } from "lucide-react";
 import * as ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { Button } from "@/components/Button";
@@ -73,28 +74,20 @@ const formatAddress = (adres?: Firm['adresDzialalnosci']) => {
   return wynik.trim();
 };
 
+const isValidState = (parsed: any) => parsed.version === 1;
+
 export default function ClientApp() {
-  const [state, setState] = useState<AppState>(INITIAL_STATE);
+  const [state, setState, clearState] = useLocalStorage<AppState>(
+    "ceidg_state",
+    INITIAL_STATE,
+    isValidState
+  );
   const [isSearching, setIsSearching] = useState(false);
   const [isFetchingPKD, setIsFetchingPKD] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isFetchingAll, setIsFetchingAll] = useState(false);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
-
-  useEffect(() => {
-    const saved = localStorage.getItem("ceidg_state");
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (parsed.version === 1) setState(parsed);
-      } catch (e) { }
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("ceidg_state", JSON.stringify(state));
-  }, [state]);
 
   const updateState = (updates: Partial<AppState>) => {
     setState((prev) => ({ ...prev, ...updates }));
@@ -115,6 +108,7 @@ export default function ClientApp() {
   };
 
   const handleLogout = async () => {
+    clearState();
     await fetch("/api/logout", { method: "POST" });
     window.location.href = "/login";
   };
@@ -435,6 +429,10 @@ export default function ClientApp() {
             <span className="hidden md:flex mx-2 text-sm">Wczytaj stan</span>
             <input type="file" accept=".json" onChange={uploadState} className="hidden" />
           </label>
+          <Button onClick={clearState} variant="outline" size="icon" title="Wyczyść zapisany stan">
+            <Trash2 size={16} />
+            <span className="hidden md:flex mx-2 text-sm">Wyczyść</span>
+          </Button>
           <Button onClick={handleLogout} variant="outline" size="icon" className="" title="Wyloguj">
             <LogOut size={16} />
             <span className="hidden md:flex mx-2 text-sm">Wyloguj</span>
