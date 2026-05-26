@@ -19,6 +19,8 @@ type Firm = {
   };
   adresDzialalnosci?: {
     ulica?: string;
+    budynek?: string;
+    lokal?: string;
     miasto?: string;
     wojewodztwo?: string;
     powiat?: string;
@@ -62,6 +64,14 @@ const INITIAL_STATE: AppState = {
 
 const REQUEST_LIMIT = 1000;
 const WINDOW_MS = 60 * 60 * 1000;
+
+const formatAddress = (adres?: Firm['adresDzialalnosci']) => {
+  if (!adres) return "";
+  let wynik = adres.ulica || "";
+  if (adres.budynek) wynik += ` ${adres.budynek}`;
+  if (adres.lokal) wynik += `/${adres.lokal}`;
+  return wynik.trim();
+};
 
 export default function ClientApp() {
   const [state, setState] = useState<AppState>(INITIAL_STATE);
@@ -272,7 +282,7 @@ export default function ClientApp() {
         nip: nip,
         nipSc: r.nipSc || "",
         regon: r.wlasciciel?.regon || "",
-        ulica: r.adresDzialalnosci?.ulica || "",
+        ulica: formatAddress(r.adresDzialalnosci),
         miasto: r.adresDzialalnosci?.miasto || "",
         wojewodztwo: r.adresDzialalnosci?.wojewodztwo || "",
         powiat: r.adresDzialalnosci?.powiat || "",
@@ -354,7 +364,7 @@ export default function ClientApp() {
         case "nip": valA = a.wlasciciel?.nip || ""; valB = b.wlasciciel?.nip || ""; break;
         case "nipSc": valA = a.nipSc || ""; valB = b.nipSc || ""; break;
         case "regon": valA = a.wlasciciel?.regon || ""; valB = b.wlasciciel?.regon || ""; break;
-        case "ulica": valA = a.adresDzialalnosci?.ulica || ""; valB = b.adresDzialalnosci?.ulica || ""; break;
+        case "ulica": valA = formatAddress(a.adresDzialalnosci); valB = formatAddress(b.adresDzialalnosci); break;
         case "miasto": valA = a.adresDzialalnosci?.miasto || ""; valB = b.adresDzialalnosci?.miasto || ""; break;
         case "wojewodztwo": valA = a.adresDzialalnosci?.wojewodztwo || ""; valB = b.adresDzialalnosci?.wojewodztwo || ""; break;
         case "powiat": valA = a.adresDzialalnosci?.powiat || ""; valB = b.adresDzialalnosci?.powiat || ""; break;
@@ -582,7 +592,7 @@ export default function ClientApp() {
                     <td className="px-2 py-3 w-28">{rowNip}</td>
                     <td className="px-2 py-3 w-28">{row.nipSc || ""}</td>
                     <td className="px-2 py-3 w-28">{row.wlasciciel?.regon || ""}</td>
-                    <td className="px-2 py-3">{row.adresDzialalnosci?.ulica || ""}</td>
+                    <td className="px-2 py-3">{formatAddress(row.adresDzialalnosci)}</td>
                     <td className="px-2 py-3">{row.adresDzialalnosci?.miasto || ""}</td>
                     <td className="px-2 py-3">{row.adresDzialalnosci?.wojewodztwo || ""}</td>
                     <td className="px-2 py-3">{row.adresDzialalnosci?.powiat || ""}</td>
